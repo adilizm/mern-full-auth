@@ -23,11 +23,11 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    otp:{
+    verificationCode:{
         type:String,
         default:'',
     },
-    otpExpairedAt:{
+    verificationCodeExpairedAt:{
         type:Date,
         default:null
     }
