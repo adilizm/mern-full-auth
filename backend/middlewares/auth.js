@@ -1,26 +1,20 @@
-const JWT = require('jsonwebtoken')
+const JWT = require("jsonwebtoken");
 
-const auth = async (req,res,next)=>{ 
-    const { token } = req.cookies
-
-    if(!token){
-        return res.json({success : false, message:"Unauthorized . Login to continue"});
-    }
-    
+const auth = async (req, res, next) => {
     try {
-        const user_id = JWT.verify(token,process.env.JWT_SECRET).id;
-        if(!user_id){
-            return res.json({success : false, message:"Unauthorized . Login to continue"});
+        const { token } = req.cookies;
+
+        if (!token) {
+            return res.status(401).json({ success: false, message: "Unauthorized. Please log in." });
         }
+
+        const decoded = JWT.verify(token, process.env.JWT_SECRET);
+        req.user_id = decoded.id;
         
-        req.user_id = user_id;
-        console.log("user_ID = ",user_id);
+        next();
     } catch (error) {
-        return res.json({success : false, message:error.message});
+        return res.status(401).json({ success: false, message: "Invalid or expired token." });
     }
+};
 
-    next()
-    
-}
-
-module.exports = auth
+module.exports = auth;

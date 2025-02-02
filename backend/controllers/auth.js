@@ -10,14 +10,14 @@ const Register = async (req, res) => {
 
     /* validate request */
     if (!username || !email || !password) {
-        return res.json({ success: false, message: "all fields (username,email & password) are required" })
+        return res.status(400).json({ success: false, message: "All fields are required." })
     }
 
     /* proccess request */
     try {
         const userExist = await User.findOne({ email })
         if (userExist) {
-            return res.json({ success: false, message: "Email Alredy Exists " })
+            return res.status(400).json({ success: false, message: "Email Alredy Exists " })
         }
 
         const hashed_password = await bcrypt.hash(password, 10)
@@ -39,10 +39,10 @@ const Register = async (req, res) => {
 
         await WellcomeEmailJob(email, username);
 
-        return res.json({ success: true, result: result })
+        return res.status(201).json({ success: true, result: result })
 
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 const Login = async (req, res) => {
@@ -50,18 +50,18 @@ const Login = async (req, res) => {
 
     /* validate request */
     if (!password || !email) {
-        return res.json({ success: false, message: "Email and password  are required " })
+        return res.status(400).json({ success: false, message: "Email and password  are required " })
     }
     /* proccess request */
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            return res.json({ success: false, message: "Invalid credentials" })
+            return res.status(401).json({ success: false, message: "Invalid credentials" })
         }
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
-            return res.json({ success: false, message: "Password incorrect" })
+            return res.status(401).json({ success: false, message: "Password incorrect" })
         }
 
         /* genirate json web tocken */
@@ -73,10 +73,10 @@ const Login = async (req, res) => {
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict'
         })
 
-        res.json({ success: true })
+        res.status(201).json({ success: true })
 
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -88,9 +88,9 @@ const LogOut = async (req, res) => {
             sameSite: process.env.NODE_ENV === "production"
         })
 
-        res.json({ success: true })
+        res.status(201).json({ success: true })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(500).json({ success: false, message: error.message })
     }
 
 }
@@ -103,9 +103,9 @@ const SendEmailVerification = async (req, res) => {
         user.verificationCodeExpairedAt = Date.now() + 24 * 60 * 60 * 1000;
         user.save();
         SendEmailVerificationJob(user.email, user.username, VERIFICATION_CODE);
-        return res.json({ success: true, message: "verification email has been sent" })
+        return res.status(201).json({ success: true, message: "verification email has been sent" })
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(500).json({ success: false, message: error.message })
     }
 
 }
@@ -115,27 +115,27 @@ const RequestEmailVerification = async (req, res) => {
     const { verification_code } = req.body;
 
     if (!verification_code) {
-        return res.json({ success: false, message: "Verification code is required" })
+        return res.status(400).json({ success: false, message: "Verification code is required" })
     }
 
     if (Date.now() > user.verificationCodeExpairedAt) {
-        return res.json({ success: false, message: "Verification code expired" })
+        return res.status(400).json({ success: false, message: "Verification code expired" })
     }
 
     try {
 
         if (verification_code != user.verificationCode) {
-            return res.json({ success: false, message: "Verification code is not valide" })
+            return res.status(400).json({ success: false, message: "Verification code is not valide" })
         } else {
             user.verification_code = "";
             user.verificationCodeExpairedAt = "";
             user.isVerified = true;
             user.save()
-            return res.json({ success: true, message: "user verified" })
+            return res.status(201).json({ success: true, message: "user verified" })
         }
 
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.status(500).json({ success: false, message: error.message })
 
     }
 
@@ -145,13 +145,13 @@ const ForgetPassword = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-        return res.json({ success: false, message: "Email required" })
+        return res.status(400).json({ success: false, message: "Email required" })
     }
 
     var user = await User.findOne({ email });
 
     if (!user) {
-        return res.json({ success: true, message: "if Email exist you will recive reset Code in your email" }); // for security i will not give info if the email exist or not in the db 
+        return res.status(201).json({ success: true, message: "if Email exist you will recive reset Code in your email" }); // for security i will not give info if the email exist or not in the db 
     }
 
     try {
@@ -160,7 +160,7 @@ const ForgetPassword = async (req, res) => {
         user.verificationCodeExpairedAt = Date.now() + 10 * 60 * 60 * 1000;// expaire in 10 min; 
         user.save();
         SendEmailPasswordResetJob(user.email, user.username, VERIFICATION_CODE);
-        return res.json({ success: true, message: "if Email exist you will recive reset Code in your email" }); // for security i will not give info if the email exist or not in the db 
+        return res.status(201).json({ success: true, message: "if Email exist you will recive reset Code in your email" }); // for security i will not give info if the email exist or not in the db 
 
 
     } catch (error) {

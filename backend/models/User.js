@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     verificationCodeExpairedAt:{
         type:Date,
         default:null
+    },
+    profile:{
+        type:String,
+        default:null
     }
 })
 
