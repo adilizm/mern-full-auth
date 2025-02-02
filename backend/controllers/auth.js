@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const JWT = require("jsonwebtoken");
 const WellcomeEmailJob = require("../jobs/wellcomeEmailJob");
 const SendEmailVerificationJob = require("../jobs/sendEmailVerification");
+const SendEmailPasswordResetJob = require("../jobs/forgetPasswordEmail");
 
 const Register = async (req, res) => {
     const { username = null, email = null, password = null } = req.body
@@ -139,4 +140,72 @@ const RequestEmailVerification = async (req, res) => {
     }
 
 }
-module.exports = { Register, Login, LogOut, SendEmailVerification, RequestEmailVerification}
+
+const ForgetPassword = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.json({ success: false, message: "Email required" })
+    }
+
+    var user = await User.findOne({ email });
+
+    if (!user) {
+        return res.json({ success: true, message: "if Email exist you will recive reset Code in your email" }); // for security i will not give info if the email exist or not in the db 
+    }
+
+    try {
+        const VERIFICATION_CODE = Math.floor(100000 + Math.random() * 900000);
+        user.verificationCode = VERIFICATION_CODE;
+        user.verificationCodeExpairedAt = Date.now() + 10 * 60 * 60 * 1000;// expaire in 10 min; 
+        user.save();
+        SendEmailPasswordResetJob(user.email, user.username, VERIFICATION_CODE);
+        return res.json({ success: true, message: "if Email exist you will recive reset Code in your email" }); // for security i will not give info if the email exist or not in the db 
+
+
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+
+    }
+}
+
+const ResetPassword = async (req, res) => {
+    const { verification_code, email, new_password, new_password_confirmation } = req.body;
+
+    if (!email) {
+        return res.json({ success: false, message: "Email required" })
+    }
+
+    var user = await User.findOne({ email });
+
+    if (!user) {
+        return res.json({ success: false, message: "user not recognized" });
+    }
+
+    try {
+
+        if (new_password != new_password_confirmation) {
+            return res.json({ success: false, message: "password must be confirmed" });
+        }
+
+        if (user.verificationCode != verification_code) {
+            return res.json({ success: false, message: "incorect code " });
+        }
+
+        if (user.verificationCodeExpairedAt < Date.now()) {
+            return res.json({ success: false, message: "code expired " });
+        }
+
+        user.verificationCode = "";
+        user.verificationCodeExpairedAt = null;
+        const hashed_password = await bcrypt.hash(new_password, 10);
+        user.password = hashed_password;
+        user.save();
+        return res.json({ success: true, message: "Password changed" });
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+
+    }
+}
+
+module.exports = { Register, Login, LogOut, SendEmailVerification, RequestEmailVerification, ForgetPassword, ResetPassword }
