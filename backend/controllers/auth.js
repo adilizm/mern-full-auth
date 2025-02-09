@@ -4,16 +4,23 @@ const JWT = require("jsonwebtoken");
 const WellcomeEmailJob = require("../jobs/wellcomeEmailJob");
 const SendEmailVerificationJob = require("../jobs/sendEmailVerification");
 const SendEmailPasswordResetJob = require("../jobs/forgetPasswordEmail");
+const Joi = require('joi');
 
 const Register = async (req, res) => {
-    const { username = null, email = null, password = null } = req.body
+    const reqSchema = Joi.object({
+        username: Joi.string().min(3).max(15).required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().min(6).required(),
+    });
 
-    /* validate request */
-    if (!username || !email || !password) {
-        return res.status(400).json({ success: false, message: "All fields are required." })
+    const { error } = reqSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
-    /* proccess request */
+    const { username, email, password } = req.body
+    const profile = req?.file?.path
+
     try {
         const userExist = await User.findOne({ email })
         if (userExist) {
@@ -23,12 +30,12 @@ const Register = async (req, res) => {
         const hashed_password = await bcrypt.hash(password, 10)
 
         const user = new User({
-            username, email, password: hashed_password
+            username, email, password: hashed_password, profile
         })
 
         var result = await user.save()
 
-        /* genirate json web tocken */
+        /* genirate json web token */
         const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7 days" });
         res.cookie("token", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -37,21 +44,30 @@ const Register = async (req, res) => {
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict'
         })
 
+        const userdata = { username, email, isVerified: result.isVerified, profile: result.profile }
+
         await WellcomeEmailJob(email, username);
 
-        return res.status(201).json({ success: true, result: result })
+        return res.status(201).json({ success: true, user: userdata })
 
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
     }
 }
+
 const Login = async (req, res) => {
     const { email = null, password = null } = req.body
 
-    /* validate request */
-    if (!password || !email) {
-        return res.status(400).json({ success: false, message: "Email and password  are required " })
+    const reqSchema = Joi.object({
+        email: Joi.string().email().required(),
+        password: Joi.string().min(6).required(),
+    });
+
+    const { error } = reqSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ success: false, message: error.details[0].message });
     }
+
     /* proccess request */
     try {
         const user = await User.findOne({ email });
@@ -72,8 +88,9 @@ const Login = async (req, res) => {
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict'
         })
+        const userdata = { username: user.username, email, isVerified: user.isVerified, profile: user.profile }
 
-        res.status(201).json({ success: true })
+        res.status(201).json({ success: true, user: userdata })
 
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
