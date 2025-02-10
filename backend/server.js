@@ -16,12 +16,19 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-const ALLOWD_OROGINS = ['http://localhost:5173', 'http://127.0.0.1:5173'];
-app.use(cors({ origin: ALLOWD_OROGINS, credentials: true }));
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];;
+
+app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/posts', postsRouter);
 app.use('/api/v1', apiRouter);
 connectdb();
 
-app.listen(3000);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+}).on('error', (err) => {
+    console.error("Server failed to start:", err);
+});

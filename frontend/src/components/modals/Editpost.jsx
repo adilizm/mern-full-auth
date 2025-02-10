@@ -5,7 +5,11 @@ import { useDispatch } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 
 import { useState, useRef, useEffect } from "react";
-import { createNewPost, getMyPosts, updatePost } from "../../redux/slices/postsSlice";
+import {
+  createNewPost,
+  getMyPosts,
+  updatePost,
+} from "../../redux/slices/postsSlice";
 
 export default function Editpost({ is_open, onClose, post }) {
   const dispatch = useDispatch();
@@ -19,23 +23,16 @@ export default function Editpost({ is_open, onClose, post }) {
 
   useEffect(() => {
     setImagePreview(null);
+    setInputes({});
   }, [is_open]);
+  
   useEffect(() => {
     if (post) {
       title.current.value = post.title;
       content.current.value = post.content;
       image.current.value = post.image;
-      setInputes({ ...forminputs, title: post.title });
-      setInputes({ ...forminputs, content: post.content });
-      setInputes({ ...forminputs, slug: post.slug });
     }
   }, [post]);
-  const handelInput = (e) => {
-    if (e.target.name == "image") {
-    } else {
-      setInputes({ ...forminputs, [e.target.name]: e.target.value });
-    }
-  };
 
   const handelClick = (e) => {
     e.preventDefault();
@@ -57,8 +54,8 @@ export default function Editpost({ is_open, onClose, post }) {
 
   const submitform = (e) => {
     e.preventDefault();
-  
-    dispatch(updatePost(forminputs))
+
+    dispatch(updatePost({title:  title.current.value,content :  content.current.value, image : forminputs.image, slug: post.slug}))
       .unwrap()
       .then(() => {
         toast.success("post Updated ", {
@@ -70,7 +67,7 @@ export default function Editpost({ is_open, onClose, post }) {
           },
           position: "top-right",
         });
-       
+
         onClose(true);
       })
       .catch((err) => {
@@ -87,7 +84,7 @@ export default function Editpost({ is_open, onClose, post }) {
       });
   };
   if (post == null) {
-    return (<></>);
+    return <></>;
   }
   return (
     <>
@@ -122,7 +119,7 @@ export default function Editpost({ is_open, onClose, post }) {
                             <div className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6"></div>
                             <input
                               id="title"
-                              onKeyUp={handelInput}
+                            
                               name="title"
                               type="text"
                               ref={title}
@@ -198,7 +195,7 @@ export default function Editpost({ is_open, onClose, post }) {
                             id="content"
                             ref={content}
                             name="content"
-                            onKeyUp={handelInput}
+                         
                             rows={10}
                             className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                           />

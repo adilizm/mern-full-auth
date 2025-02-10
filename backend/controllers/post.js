@@ -16,7 +16,7 @@ const postsList = async (req, res) => {
 }
 const ConnectedUserPosts = async (req, res) => {
     try {
-        console.log('req.user_id = ',req.user_id)
+      
         const posts = await Post.find({owner: new mongoose.Types.ObjectId(req.user_id+"")}).populate({
             path: 'owner',
             select: 'username profile '

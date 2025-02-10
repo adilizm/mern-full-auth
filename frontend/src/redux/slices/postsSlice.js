@@ -62,6 +62,20 @@ export const updatePost = createAsyncThunk(
   }
 );
 
+export const deletePost = createAsyncThunk(
+  'posts/delete',
+  async (data, { rejectWithValue }) => {
+    try {
+    
+      const response = await API.delete(`/posts/delete/${data.slug}?_method=DELETE`, {  withCredentials: true });
+    
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const initialState = {
   posts: [],
   post: null
@@ -85,6 +99,7 @@ const postsSlice = createSlice({
       .addCase(createNewPost.fulfilled, (state, action) => {
         state.posts = action.payload.posts;
       })
+      
      
   }
 });

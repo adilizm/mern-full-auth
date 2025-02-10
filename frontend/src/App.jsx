@@ -7,7 +7,7 @@ import GuestRoute from "./components/GuestRoute.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Blog from "./pages/posts/Blog.jsx";
 import Profile from "./pages/profile.jsx";
-import Show from "./pages/posts/show.jsx";
+import Show from "./pages/posts/Show.jsx";
 import Posts from "./pages/posts/Posts.jsx";
 
 function App() {

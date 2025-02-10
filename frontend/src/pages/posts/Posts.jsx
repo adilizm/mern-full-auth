@@ -9,10 +9,12 @@ import { store } from "../../redux/store";
 import Newpost from "../../components/modals/Newpost";
 import { Link } from "react-router-dom";
 import Editpost from "../../components/modals/Editpost";
+import Deletepost from "../../components/modals/Deletepost";
 
 const Posts = () => {
   const [posts, setposts] = useState([]);
   const [postToEdit, setpostToEdit] = useState(null);
+  const [postToDelete, setPostToDelete] = useState(null);
   const [creatingNewPost, setCreatingNewPost] = useState(false);
 
   const dispatch = useDispatch();
@@ -64,6 +66,12 @@ const Posts = () => {
         is_open={postToEdit != null}
         onClose={()=>{setpostToEdit(null), fetchPosts();}}
       />
+      <Deletepost
+        post={postToDelete}
+        is_open={postToDelete != null}
+        onClose={()=>{setPostToDelete(null), fetchPosts();}}
+      />
+
       <div className=" max-w-4xl mx-auto">
         <div className="flex my-4 items-end justify-between gap-4">
           <h1 className="text-2xl/8 font-semibold text-zinc-950 sm:text-xl/8 dark:text-white">
@@ -130,7 +138,7 @@ const Posts = () => {
                         {" "}
                         <PencilIcon className="w-3" />{" "}
                       </button>
-                      <button className="inline-flex items-center justify-center px-2 py-[calc(--spacing(1.5)-1px)] rounded-lg border border-transparent ring-1 shadow-sm ring-black/10 text-sm font-medium whitespace-nowrap text-white data-disabled:bg-transparent data-disabled:opacity-40 data-hover:bg-red-400 bg-red-700">
+                      <button onClick={()=>setPostToDelete(post)} className="inline-flex items-center justify-center px-2 py-[calc(--spacing(1.5)-1px)] rounded-lg border border-transparent ring-1 shadow-sm ring-black/10 text-sm font-medium whitespace-nowrap text-white data-disabled:bg-transparent data-disabled:opacity-40 data-hover:bg-red-400 bg-red-700">
                         {" "}
                         <TrashIcon className="w-3" />{" "}
                       </button>
