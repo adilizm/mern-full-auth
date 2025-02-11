@@ -22,6 +22,7 @@ app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/posts', postsRouter);
+apiRouter.get('/status',(req,res)=>{ return res.json({status:"Server is up"}) })
 app.use('/api/v1', apiRouter);
 connectdb();
 
