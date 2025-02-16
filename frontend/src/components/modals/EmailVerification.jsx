@@ -30,7 +30,7 @@ export default function EmailVerification({is_open,onClose }) {
         })
         .catch((err) => {
           setIsloading(false);
-          console.log("register error:", err.message);
+          console.log("register error:", err);
           toast.error(err.message, {
             duration: 4000,
             style: {

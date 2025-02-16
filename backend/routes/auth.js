@@ -4,7 +4,9 @@ const auth = require("../middlewares/auth");
 const { multerUpload } = require("../config/multer");
 
 const authRouter = express.Router()
-
+/* 
+apiRouter.post('/register',(req,res)=>{ console.log('register called checked') })
+ */
 authRouter.post('/register', multerUpload.single("profile"), Register)
 authRouter.post('/login', Login)
 authRouter.post('/logout', LogOut)

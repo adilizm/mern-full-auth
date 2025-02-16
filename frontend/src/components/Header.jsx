@@ -111,7 +111,7 @@ const Header = () => {
             <span className="sr-only">Your Company</span>
             <img
               alt=""
-              src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/512px-Tailwind_CSS_Logo.svg.png?20230715030042"
               className="h-8 w-auto"
             />
           </a>
@@ -201,7 +201,7 @@ const Header = () => {
                     alt=""
                     src={
                       import.meta.env.VITE_API_BASE_URL +
-                      "/uploads/" +
+                      "/" +
                       store.getState().users.user.profile
                     }
                     className="size-10 rounded-full bg-gray-50"

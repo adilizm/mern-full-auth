@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   backend:
     build: ./backend
@@ -6,17 +7,27 @@ services:
       - "3000:3000"
     env_file:
       - ./backend/.env
+    environment:
+      - MONGO_DB_URL=mongodb://admin:password@mongodb:27017/myfullauth?authSource=admin
     depends_on:
       - mongodb
-    environment:
-      - MONGO_DB_URL=mongodb://mongodb:27017/myfullauth
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - mynetwork
 
   frontend:
     build: ./frontend
     ports:
-      - "80:80"
+      - "5173:5173"
     depends_on:
       - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - mynetwork
 
   mongodb:
     image: mongo:6
@@ -26,3 +37,36 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: myfullauth
+    volumes:
+      - mongodb-data:/data/db  # Persistent volume for MongoDB data
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mynetwork
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data  # Persistent volume for redis data
+    networks:
+      - mynetwork
+  nginx:
+    image: nginx
+    volumes:
+    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+    - "80:5001"
+    environment:
+    - NGINX_PORT=5001
+    networks:
+      - mynetwork
+    depends_on:
+      - frontend
+volumes:
+  mongodb-data:
+  redis-data:
+
+networks:
+  mynetwork:  # Define the custom network

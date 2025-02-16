@@ -16,14 +16,21 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];;
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',') || ['http://backend:5173'];;
+app.use(cors({
+    origin: ['http://localhost:5173','http://nginx','http://frontend','http://localhost'],
+    methods: ['GET', 'POST', 'PUT','DELETE','OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }));
 
-app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
+/* app.use(cors({ origin: ["http://localhost:5173","*"],  methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'], }));  */
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/posts', postsRouter);
-apiRouter.get('/status',(req,res)=>{ return res.json({status:"Server is up"}) })
-app.use('/api/v1', apiRouter);
+apiRouter.get('/status',(req,res)=>{ console.log('status checked'); return res.json({status:"Server is up"}) })
+app.use('/api', apiRouter);
 connectdb();
 
 const PORT = process.env.PORT || 3000;

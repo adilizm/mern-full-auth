@@ -77,23 +77,23 @@ const Blog = () => {
 
           <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {posts.map((post) => (
-              <div class="relative flex flex-col rounded-3xl bg-white p-2 ring-1 shadow-md shadow-black/5 ring-black/5">
+              <div key={post.slug} className="relative flex flex-col rounded-3xl bg-white p-2 ring-1 shadow-md shadow-black/5 ring-black/5">
                 <img
                   alt="A crossed out European emblem"
                   src={import.meta.env.VITE_API_BASE_URL + "/" + post?.image}
-                  class="aspect-3/2 w-full rounded-2xl object-cover"
+                  className="aspect-3/2 w-full rounded-2xl object-cover"
                 />
-                <div class="flex flex-1 flex-col p-8">
-                  <div class="text-sm/5 text-gray-700">
+                <div className="flex flex-1 flex-col p-8">
+                  <div className="text-sm/5 text-gray-700">
                     {moment(post?.createdAt).format("dddd, MMMM D, YYYY")}
                   </div>
-                  <div class="mt-2 text-base/7 font-medium">
+                  <div className="mt-2 text-base/7 font-medium">
                     <Link to={"/blog/" + post.slug}> {post.title} </Link>
                   </div>
-                  <div class="mt-2 flex-1 text-sm/6 text-gray-500">
+                  <div className="mt-2 flex-1 text-sm/6 text-gray-500">
                     {post.content}
                   </div>
-                  <div class="mt-6 flex items-center gap-3">
+                  <div className="mt-6 flex items-center gap-3">
                     <img
                       alt=""
                       src={
@@ -101,9 +101,9 @@ const Blog = () => {
                         "/" +
                         post?.owner.profile
                       }
-                      class="aspect-square size-6 rounded-full object-cover"
+                      className="aspect-square size-6 rounded-full object-cover"
                     />
-                    <div class="text-sm/5 text-gray-700">
+                    <div className="text-sm/5 text-gray-700">
                       {post.owner.username}
                     </div>
                   </div>

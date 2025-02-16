@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api/axiosInstance';
+import axios from "axios";
 
 // ✅ Async Thunks for Register & Login
 export const registerUser = createAsyncThunk(
@@ -14,10 +15,10 @@ export const registerUser = createAsyncThunk(
         formData.append("profile", userData.profile);
       }
 
-      const response = await API.post('/auth/register', formData, { headers: { "Content-Type": "multipart/form-data" }, withCredentials: true });
+      const response = await axios.post('http://localhost:3000/api/auth/register', formData, { headers: { "Content-Type": "multipart/form-data" }, withCredentials: true });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error);
     }
   }
 );
@@ -26,10 +27,11 @@ export const loginUser = createAsyncThunk(
   'users/login',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await API.post('/auth/login', userData, { withCredentials: true });
+
+      const response = await axios.post('http://localhost:3000/api/auth/login', userData, { withCredentials: true });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error);
     }
   }
 );
@@ -38,10 +40,10 @@ export const logoutUser = createAsyncThunk(
   'users/logout',
   async ({ }, { rejectWithValue }) => {
     try {
-      const response = await API.post('/auth/logout', {}, { withCredentials: true });
+      const response = await axios.post('http://localhost:3000/api/auth/logout', {}, { withCredentials: true });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error);
     }
   }
 );
@@ -50,10 +52,10 @@ export const requestVerification = createAsyncThunk(
   'users/requestVerification',
   async ({}, { rejectWithValue }) => {
     try {
-      const response = await API.get('/auth/send-email-verification', { withCredentials: true });
+      const response = await axios.get('http://localhost:3000/api/auth/send-email-verification', { withCredentials: true });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error);
     }
   }
 );
@@ -62,10 +64,10 @@ export const VerifyEmail = createAsyncThunk(
   'users/VerifyEmail',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await API.post('/auth/verify-account',data, { withCredentials: true });
+      const response = await axios.post('http://localhost:3000/api/auth/verify-account',data, { withCredentials: true });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error);
     }
   }
 );

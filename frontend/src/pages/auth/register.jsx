@@ -65,7 +65,7 @@ const Register = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="Your Company"
-            src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/512px-Tailwind_CSS_Logo.svg.png?20230715030042"
             className="mx-auto h-10 w-auto"
           />
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
@@ -73,7 +73,7 @@ const Register = () => {
           </h2>
         </div>
         <p className="mt-10 text-center text-sm/6 text-gray-500">
-          you have an account{" "}
+          you have s an account{" "}
           <Link
             className="font-semibold text-indigo-600 hover:text-indigo-500"
             to="/login"
