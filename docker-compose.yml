@@ -11,11 +11,12 @@ services:
       - MONGO_DB_URL=mongodb://admin:password@mongodb:27017/myfullauth?authSource=admin
     depends_on:
       - mongodb
+    command: npm run start  # Use nodemon for live reload
     volumes:
       - ./backend:/app
       - /app/node_modules
     networks:
-      - mynetwork
+      - MERN_FULL_AUTH_NETWORK
 
   frontend:
     build: ./frontend
@@ -27,7 +28,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     networks:
-      - mynetwork
+      - MERN_FULL_AUTH_NETWORK
 
   mongodb:
     image: mongo:6
@@ -42,7 +43,7 @@ services:
       - mongodb-data:/data/db  # Persistent volume for MongoDB data
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
-      - mynetwork
+      - MERN_FULL_AUTH_NETWORK
   redis:
     image: redis
     restart: always
@@ -51,7 +52,7 @@ services:
     volumes:
       - redis-data:/data  # Persistent volume for redis data
     networks:
-      - mynetwork
+      - MERN_FULL_AUTH_NETWORK
   nginx:
     image: nginx
     volumes:
@@ -61,12 +62,26 @@ services:
     environment:
     - NGINX_PORT=5001
     networks:
-      - mynetwork
+      - MERN_FULL_AUTH_NETWORK
     depends_on:
       - frontend
+  mongo-express:
+    image: mongo-express:latest # latest image
+    container_name: mongo-express
+    restart: unless-stopped
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_SERVER: mongodb 
+    depends_on:
+      - mongodb
+    networks:
+      - MERN_FULL_AUTH_NETWORK
 volumes:
   mongodb-data:
   redis-data:
 
 networks:
-  mynetwork:  # Define the custom network
+  MERN_FULL_AUTH_NETWORK:  

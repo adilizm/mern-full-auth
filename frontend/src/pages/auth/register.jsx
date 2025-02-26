@@ -103,7 +103,7 @@ const Register = () => {
               {imagePreview != null ? (
                 <>
                   {" "}
-                  <img src={imagePreview} alt="profile" />{" "}
+                  <img src={imagePreview} alt="profile" className="w-20 h-20" />{" "}
                 </>
               ) : (
                 <>

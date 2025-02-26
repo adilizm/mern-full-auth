@@ -9,7 +9,7 @@ import Blog from "./pages/posts/Blog.jsx";
 import Profile from "./pages/profile.jsx";
 import Show from "./pages/posts/Show.jsx";
 import Posts from "./pages/posts/Posts.jsx";
-import Chats from "./pages/Chats.jsx";
+import Chat from "./pages/Chat.jsx";
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/blog/:slug" element={<Show />} />
           <Route path="/myposts" element={<Posts />} />
-          <Route path="/chats" element={<Chats />} />
+          <Route path="/conversations" element={<Chat />} />
         </Route>
 
         <Route element={<GuestRoute />}>

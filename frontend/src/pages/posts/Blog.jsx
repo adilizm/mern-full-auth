@@ -99,12 +99,12 @@ const Blog = () => {
                       src={
                         import.meta.env.VITE_API_BASE_URL +
                         "/" +
-                        post?.owner.profile
+                        post?.owner?.profile
                       }
                       className="aspect-square size-6 rounded-full object-cover"
                     />
                     <div className="text-sm/5 text-gray-700">
-                      {post.owner.username}
+                      {post?.owner?.username}
                     </div>
                   </div>
                 </div>

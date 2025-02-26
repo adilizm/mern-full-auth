@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@plugin 'tailwind-scrollbar' {
+  preferredStrategy: 'pseudoelements';
+}
+
 @theme {
   --font-sans: InterVariable, sans-serif;
 }

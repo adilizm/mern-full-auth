@@ -44,7 +44,7 @@ const Register = async (req, res) => {
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict'
         })
 
-        const userdata = { username, email, isVerified: result.isVerified, profile: result.profile }
+        const userdata = { username, email, isVerified: result.isVerified, profile: result.profile, _id: result._id }
 
         await WellcomeEmailJob(email, username);
 
@@ -88,7 +88,7 @@ const Login = async (req, res) => {
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict'
         })
-        const userdata = { username: user.username, email, isVerified: user.isVerified, profile: user.profile }
+        const userdata = { username: user.username, email, isVerified: user.isVerified, profile: user.profile, _id: user._id }
 
         res.status(201).json({ success: true, user: userdata })
 
@@ -225,4 +225,27 @@ const ResetPassword = async (req, res) => {
     }
 }
 
-module.exports = { Register, Login, LogOut, SendEmailVerification, RequestEmailVerification, ForgetPassword, ResetPassword }
+const SearchUser = async (req, res) => {
+    const { keyword } = req.body;
+
+    if (!keyword) {
+        return res.json({ success: false, message: "keyword required" })
+    }
+
+    try {
+        const users = await User.find({
+            $or: [
+                { username: { $regex: keyword, $options: "i" } },
+                { email: { $regex: keyword, $options: "i" } }
+            ]
+        }).select('username profile');
+
+
+        return res.json({ success: true, users: users });
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
+
+    }
+}
+
+module.exports = { Register, Login, LogOut, SendEmailVerification, RequestEmailVerification, ForgetPassword, ResetPassword, SearchUser }

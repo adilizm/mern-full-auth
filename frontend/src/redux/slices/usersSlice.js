@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from '../../api/axiosInstance';
 import axios from "axios";
 
 // ✅ Async Thunks for Register & Login
@@ -72,10 +71,23 @@ export const VerifyEmail = createAsyncThunk(
   }
 );
 
+export const SearchUser = createAsyncThunk(
+  'users/searchUser',
+  async (userdata, { rejectWithValue }) => {
+    try {
+
+      const response = await axios.post('http://localhost:3000/api/auth/search', userdata, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 const initialState = {
   isAuthenticated: false,
   user: null,
+  list_searched_users: [],
   error: null,
 };
 
@@ -100,12 +112,18 @@ const usersSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
         state.isAuthenticated = false;
+        state.user =null;
+        state.list_searched_users = []
+
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.error = action.payload || 'Logout failed';
       })
       .addCase(VerifyEmail.fulfilled, (state, action) => {
         state.user.isVerified = true;
+      })
+      .addCase(SearchUser.fulfilled, (state, action) => {
+        state.list_searched_users = action.payload.users
       });
   }
 });
