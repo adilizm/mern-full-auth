@@ -1,8 +1,8 @@
-const { transporter } = require('../config/nodemailer.js');
-const { forget_password_queue } = require('../config/queue.js');
+import { transporter } from '../config/nodemailer.js';
+import { forget_password_queue } from '../config/queue.js';
 
 forget_password_queue.process(async (job) => {
-    const { to, username,verification_code } = job.data;
+    const { to, username, verification_code } = job.data;
 
     const info = await transporter.sendMail({
         from: '"adil izm" <app@example.com>', // sender address
@@ -16,7 +16,7 @@ forget_password_queue.process(async (job) => {
     return true;
 });
 
-const SendEmailPasswordResetJob = async (to, username,verification_code) => {
+const SendEmailPasswordResetJob = async (to, username, verification_code) => {
     const delay = 0; // in milliseconds
 
     const job = await forget_password_queue.add(
@@ -31,4 +31,4 @@ const SendEmailPasswordResetJob = async (to, username,verification_code) => {
     );
 }
 
-module.exports = SendEmailPasswordResetJob
+export { SendEmailPasswordResetJob }

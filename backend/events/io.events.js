@@ -1,4 +1,4 @@
-const { saveMessage, MarkMessageDelivred, MarkMessageSeen } = require("../controllers/conversation.controller");
+import { saveMessage, MarkMessageDelivred, MarkMessageSeen, SaveMessageWithFiles } from "../controllers/conversation.controller.js";
 
 let onlineUsers = new Map();
 
@@ -48,6 +48,19 @@ const SocketEvents = (io) => {
             try {
                 const res = await MarkMessageSeen(data._id)
                 io.to(onlineUsers.get(data.from)).emit("message_is_seen", res);
+            } catch (error) {
+                console.error(error.message)
+            }
+        });
+
+        socket.on("messageWithFiles", async (data) => {
+            try {
+                console.log('messageWithFiles => ',data);
+                const [conv, msg] = await SaveMessageWithFiles(data);
+                data.conversation = conv;
+                data.msg = msg;
+                delete (data.files)
+                io.to(onlineUsers.get(data.to)).to(onlineUsers.get(data.from)).emit("message", data);
 
             } catch (error) {
                 console.error(error.message)
@@ -61,4 +74,4 @@ const SocketEvents = (io) => {
 };
 
 
-module.exports = SocketEvents
+export { SocketEvents }

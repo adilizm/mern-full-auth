@@ -22,7 +22,6 @@ const Register = () => {
 
   const handelClick = (e) => {
     e.preventDefault();
-    console.log("profilefile = ", profilefile);
     profilefile.current.click();
   };
 

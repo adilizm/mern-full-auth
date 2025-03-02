@@ -1,7 +1,7 @@
-const { default: mongoose } = require("mongoose");
-const { generateUniqueSlug } = require("../helpers/slugify");
-const Post = require("../models/Post")
-const Joi = require('joi');
+import { mongoose } from "mongoose";
+import { generateUniqueSlug } from "../helpers/slugify.js";
+import {Post} from "../models/Post.js";
+import Joi from 'joi';
 
 const postsList = async (req, res) => {
     try {
@@ -113,4 +113,4 @@ const deletePost = async (req, res) => {
     }
 }
 
-module.exports = { postsList, getPost, createPost, updatePost, deletePost,ConnectedUserPosts }
+export  { postsList, getPost, createPost, updatePost, deletePost,ConnectedUserPosts }

@@ -1,4 +1,4 @@
-const { Server } = require("socket.io");
+import { Server } from "socket.io";
 
 const initializeSocket = (server) => {
     const io = new Server(server, {
@@ -6,9 +6,11 @@ const initializeSocket = (server) => {
             origin: ['http://localhost:5173', 'http://nginx', 'http://frontend', 'http://localhost'],
             methods: ["GET", "POST"]
         }
+        , maxHttpBufferSize: 1e8 // 100 MB
+
     });
 
     return io;
 };
 
-module.exports = initializeSocket;
+export { initializeSocket };

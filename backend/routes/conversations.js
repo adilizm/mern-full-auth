@@ -1,11 +1,10 @@
-const express = require("express");
-const auth = require("../middlewares/auth");
-const { getConversation, conversations, conversationDetailes } = require("../controllers/conversation.controller");
+import express from "express";
+import {auth} from "../middlewares/auth.js";
+import { getConversation, conversations, conversationDetailes } from "../controllers/conversation.controller.js";
 
 const conversationsRouter = express.Router();
 
 conversationsRouter.post("/", auth, getConversation);
-conversationsRouter.get("/conversations",auth, conversations);
-// conversationsRouter.get("/:username",auth, conversationDetailes);
+conversationsRouter.get("/conversations", auth, conversations);
 
-module.exports = conversationsRouter;
+export { conversationsRouter };

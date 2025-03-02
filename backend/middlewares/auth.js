@@ -1,4 +1,4 @@
-const JWT = require("jsonwebtoken");
+import JWT from "jsonwebtoken";
 
 const auth = async (req, res, next) => {
     try {
@@ -17,4 +17,4 @@ const auth = async (req, res, next) => {
     }
 };
 
-module.exports = auth;
+export { auth }

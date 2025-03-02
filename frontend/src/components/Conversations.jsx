@@ -47,7 +47,7 @@ function ConversationLastMessage({ conversation, currentUserId }) {
 
   return isCurrentUserMessage ? (
     <div className="flex">
-      <span className="mx-0.5">{lastMessageContent}</span>{" "}
+      <span className="mx-0.5 truncate max-w-40">{lastMessageContent}</span>{" "}
       {is_seen ? <Seen_Svg /> : ( is_delivred ? <Delivred_svg /> : <Sended_Svg/> )}
       
     </div>

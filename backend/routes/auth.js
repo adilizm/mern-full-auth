@@ -1,7 +1,7 @@
-const express = require("express");
-const { Register, Login, LogOut, SendEmailVerification, RequestEmailVerification, ForgetPassword, ResetPassword, SearchUser } = require("../controllers/auth");
-const auth = require("../middlewares/auth");
-const { multerUpload } = require("../config/multer");
+import express from "express";
+import { Register, Login, LogOut, SendEmailVerification, RequestEmailVerification, ForgetPassword, ResetPassword, SearchUser } from "../controllers/auth.js";
+import {auth} from "../middlewares/auth.js";
+import { multerUpload } from "../config/multer.js";
 
 const authRouter = express.Router()
 /* 
@@ -16,4 +16,4 @@ authRouter.post('/forget-password', ForgetPassword)
 authRouter.post('/reset-password', ResetPassword)
 authRouter.post('/search', SearchUser)
 
-module.exports = authRouter 
+export { authRouter} 

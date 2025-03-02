@@ -1,5 +1,5 @@
-const slugify = require("slugify");
-const Post = require("../models/Post");
+import slugify from "slugify";
+import {Post} from "../models/Post.js";
 
 
 async function generateUniqueSlug(title) {
@@ -14,4 +14,4 @@ async function generateUniqueSlug(title) {
     return uniqueSlug;
 }
 
-module.exports = { generateUniqueSlug }
+export { generateUniqueSlug }

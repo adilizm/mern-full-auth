@@ -30,6 +30,46 @@ export const selectConversationThunk = (conversation) => (dispatch, getState) =>
     dispatch(selectReceiver({ conversation, username: receiver_username.username }));
 };
 
+export const EmitMessage = (data) => (dispatch, getState) => {
+    const socket = getState().sockets.socket;
+    console.log('senddm data = ', {
+        conversation_id: data.conversation_id,
+        from: data.from,
+        to: data.to,
+        content: data.content,
+    })
+    socket.emit("new_message", {
+        conversation_id: data.conversation_id,
+        from: data.from,
+        to: data.to,
+        content: data.content,
+    });
+};
+
+export const EmitMessageWithFiles = (data) => (dispatch, getState) => {
+    const socket = getState().sockets.socket;
+    const conversation_id = getState().conversations.current_conversation.id;
+    const from = getState().users.user._id;
+    const to = getState().conversations.receiver_ID;
+
+    console.log('EmitMessageWithFiles data = ', {
+        conversation_id,
+        from,
+        to,
+        files: data.files,
+        caption: data.caption,
+    })
+
+    socket.emit("messageWithFiles", {
+        conversation_id,
+        from,
+        to,
+        files: data.files,
+        caption: data.caption,
+    });
+
+};
+
 const initialState = {
     conversations: null,
     current_conversation: null,
@@ -66,7 +106,7 @@ const conversationsSlice = createSlice({
         selectReceiver: (state, option) => {
             state.receiver_username = option.payload.username;
         },
-        
+
 
         MessageDelivered: (state, action) => {
             console.log('act msg del payload = ', action.payload)
@@ -85,8 +125,6 @@ const conversationsSlice = createSlice({
                 return conversation;
             });
 
-            console.log('action.payload.msg._id = ', action.payload._id)
-            console.log(' state.current_conversation.messages  = ', state.current_conversation)
             if (state.current_conversation.id == action.payload.conversationId) {
                 state.current_conversation.messages = state.current_conversation.messages.map(message => {
                     if (message._id == action.payload._id) {

@@ -1,7 +1,7 @@
-const express = require("express");
-const { postsList, createPost, getPost, updatePost, deletePost, ConnectedUserPosts } = require("../controllers/post");
-const auth = require("../middlewares/auth");
-const { multerUpload } = require("../config/multer");
+import express from "express";
+import { postsList, createPost, getPost, updatePost, deletePost, ConnectedUserPosts } from "../controllers/post.js";
+import {auth} from "../middlewares/auth.js";
+import { multerUpload } from "../config/multer.js";
 
 const postsRouter = express.Router();
 
@@ -12,4 +12,4 @@ postsRouter.get("/:slug", getPost);
 postsRouter.put("/update/:slug", auth,multerUpload.single("new_image"), updatePost);
 postsRouter.delete("/delete/:slug", auth, deletePost);
 
-module.exports = postsRouter;
+export { postsRouter};

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const MessageSchema = new mongoose.Schema({
     conversationId: {
@@ -8,7 +8,7 @@ const MessageSchema = new mongoose.Schema({
     },
     content: {
         type: String,
-        required: true,
+        required: false,
     },
     from: {
         type: mongoose.Schema.Types.ObjectId,
@@ -31,9 +31,14 @@ const MessageSchema = new mongoose.Schema({
         type: Date,
         default: null,
     },
+    has_file: {
+        type: Boolean,
+        default: false
+    },
+    files_info: [{ type: String }],
     createdAt: { type: Date, default: () => new Date() },
     updatedAt: { type: Date, default: () => new Date() },
 }, { timestamps: true })
 const Message = new mongoose.model('message', MessageSchema)
 
-module.exports = Message;
+export { Message };

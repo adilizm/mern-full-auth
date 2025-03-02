@@ -1,5 +1,5 @@
-const { transporter } = require('../config/nodemailer.js');
-const { wellcome_queue } = require('../config/queue.js');
+import { transporter } from '../config/nodemailer.js';
+import { wellcome_queue } from '../config/queue.js';
 
 wellcome_queue.process(async (job) => {
     const { to, username } = job.data;
@@ -31,4 +31,4 @@ const WellcomeEmailJob = async (to, username) => {
     );
 }
 
-module.exports = WellcomeEmailJob 
+export {WellcomeEmailJob} 

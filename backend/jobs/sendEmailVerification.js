@@ -1,5 +1,5 @@
-const { transporter } = require('../config/nodemailer.js');
-const { email_verification_queue } = require('../config/queue.js');
+import { transporter } from '../config/nodemailer.js';
+import { email_verification_queue } from '../config/queue.js';
 
 email_verification_queue.process(async (job) => {
     const { to, username,verification_code } = job.data;
@@ -31,4 +31,4 @@ const SendEmailVerificationJob = async (to, username,verification_code) => {
     );
 }
 
-module.exports = SendEmailVerificationJob 
+export {SendEmailVerificationJob} 

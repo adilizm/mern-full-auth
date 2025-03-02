@@ -32,6 +32,7 @@ function Chat() {
 
         s.on("message", (data) => {
           dispatch(PushMessage(data));
+          console.log('message data = ',data)
           if(_id != data.msg.from){
             s.emit('message_delivred',data.msg)
             console.log('message_delivred fired')

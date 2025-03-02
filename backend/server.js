@@ -1,18 +1,20 @@
-require('dotenv').config();
-const express = require("express");
-const connectdb = require('./config/mongoose');
-const cookieParser = require('cookie-parser');
-const methodOverride = require('method-override');
-const cors = require('cors');
-const http = require("http");
+import dotenv from 'dotenv';
+dotenv.config();
 
-const initializeSocket = require("./config/socket.config");
-const SocketEvents = require("./events/io.events");
+import express from "express";
+import { connectdb } from './config/mongoose.js'; 
+import cookieParser from 'cookie-parser';
+import methodOverride from 'method-override';
+import cors from 'cors';
+import http from "http";
+
+import {initializeSocket} from "./config/socket.config.js";
+import {SocketEvents} from "./events/io.events.js";
 
 const apiRouter = express.Router();
-const authRouter = require('./routes/auth');
-const postsRouter = require('./routes/posts');
-const conversationsRouter = require('./routes/conversations');
+import {authRouter} from './routes/auth.js';
+import {postsRouter} from './routes/posts.js';
+import {conversationsRouter} from './routes/conversations.js';
 
 const app = express();
 const server = http.createServer(app);

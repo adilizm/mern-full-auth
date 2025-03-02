@@ -1,10 +1,10 @@
-const User = require("../models/User")
-const bcrypt = require('bcryptjs');
-const JWT = require("jsonwebtoken");
-const WellcomeEmailJob = require("../jobs/wellcomeEmailJob");
-const SendEmailVerificationJob = require("../jobs/sendEmailVerification");
-const SendEmailPasswordResetJob = require("../jobs/forgetPasswordEmail");
-const Joi = require('joi');
+import {User} from "../models/User.js"
+import bcrypt from "bcryptjs"
+import JWT from "jsonwebtoken"
+import {WellcomeEmailJob} from "../jobs/wellcomeEmailJob.js"
+import {SendEmailVerificationJob} from "../jobs/sendEmailVerification.js"
+import {SendEmailPasswordResetJob} from "../jobs/forgetPasswordEmail.js"
+import Joi from "joi"
 
 const Register = async (req, res) => {
     const reqSchema = Joi.object({
@@ -248,4 +248,4 @@ const SearchUser = async (req, res) => {
     }
 }
 
-module.exports = { Register, Login, LogOut, SendEmailVerification, RequestEmailVerification, ForgetPassword, ResetPassword, SearchUser }
+export { Register, Login, LogOut, SendEmailVerification, RequestEmailVerification, ForgetPassword, ResetPassword, SearchUser }
